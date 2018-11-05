@@ -14,8 +14,10 @@ class ViewController: UIViewController {
     @IBOutlet weak var sceneView: ARSCNView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        addBox()
+        addTapGestureToSceneView()
     }
+
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -39,6 +41,18 @@ class ViewController: UIViewController {
         let scene = SCNScene()
         scene.rootNode.addChildNode(boxNode)
         sceneView.scene = scene
+    }
+
+    func addTapGestureToSceneView() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.didTap(withGestureRecognizer:)))
+        sceneView.addGestureRecognizer(tapGestureRecognizer)
+    }
+
+    @objc func didTap(withGestureRecognizer recognizer: UIGestureRecognizer) {
+        let tapLocation = recognizer.location(in: sceneView)
+        let hitTestResults = sceneView.hitTest(tapLocation)
+        guard let node = hitTestResults.first?.node else { return }
+        node.removeFromParentNode()
     }
 
 }
